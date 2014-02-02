@@ -41,7 +41,7 @@ If you do not have a compiler installed, you will want to load one with the clas
 
 ```Puppet
 class { 'homebrew':
-  compiler_source  => 'https://my_repo/command_line_tools_os_x_mavericks_for_xcode__late_october_2013.dmg',
+  xcode_cli_source  => 'https://my_repo/command_line_tools_os_x_mavericks_for_xcode__late_october_2013.dmg',
 }
 ```
 
@@ -54,6 +54,7 @@ To install on behalf of another user, use these parameters:
 class { 'homebrew':
   user  => gildas,
   group => brew,
+}
 ```
 
 ## Installing brews
