@@ -65,9 +65,24 @@ To install brews, use the package provider as follows:
 package {'macvim':
   ensure   => installed,
   provider => brew,
+  linkapps => true, 
 }
 ```
+Setting linkapps to true will run "brew linkapps" once the package is installed.
+This is necessary if the installed application should be visible in Finder's Applications. 
 
+brew will run under the user that was used to install it.
+
+Install-time options are given as follows:
+
+```puppet
+package {'macvim':
+  ensure          => installed,
+  provider        => brew,
+  linkapps        => true, 
+  install_options => [ '--override-system-vim' ],
+}
+```
 ## License
 
 Copyright (c) 2014 Gildas CHERRUEL (Apache License, Version 2.0)
