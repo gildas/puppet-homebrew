@@ -137,7 +137,7 @@ class homebrew (
     creates   => '/usr/local/bin/brew',
     logoutput => on_failure,
     timeout   => 0,
-    require   => File[$directories],
+    require   => File[$homebrew_directories],
   }
   if (! $has_compiler)
   {

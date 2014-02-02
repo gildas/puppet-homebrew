@@ -1,5 +1,5 @@
 name    'gildas-homebrew'
-version '0.4.0'
+version '0.4.1'
 source 'https://github.com/gildas/puppet-homebrew'
 author 'gildas'
 license 'Apache License, Version 2.0'
