@@ -14,27 +14,26 @@
 #
 # Document parameters here.
 #
-# [*sample_parameter*]
-#   Explanation of what this parameter affects and what it defaults to.
-#   e.g. "Specify one or more upstream ntp servers as an array."
+# [*xcode_cli_source*]
+#   Contains the URL where this module can find the XCode CLI package
+#   Default: 'http://puppet/command_line_tools_os_x_mavericks_for_xcode__late_october_2013.dmg'
 #
-# === Variables
+# [*user*]
+#   Tells which user will own the Homebrew installation.
+#   It is highly encouraged to choose a user different than the default.
+#   Default: root
 #
-# Here you should define a list of variables that this module would require.
-#
-# [*sample_variable*]
-#   Explanation of how this variable affects the funtion of this class and if it
-#   has a default. e.g. "The parameter enc_ntp_servers must be set by the
-#   External Node Classifier as a comma separated list of hostnames." (Note,
-#   global variables should not be used in preference to class parameters  as of
-#   Puppet 2.6.)
+# [*group*]
+#   Tells which group will own the Homebrew installation.
+#   You should add users to this group later on if you want them to be allowed to install brews.
+#   Defaults: brew
 #
 # === Examples
 #
 #  include homebrew
 #
 #  To install for a given user:
-
+#
 #  class { 'homebrew':
 #    user  => gildas,
 #    group => brew,
