@@ -150,4 +150,16 @@ class homebrew (
     mode      => '0775',
     require   => Exec['install-homebrew'],
   }
+
+  # Installs brews from hiera
+  $brews = hiera_array('brews')
+  if (!empty($brews))
+  {
+    package {$brews:
+      ensure   => installed,
+      provider => brew,
+      require  => Exec['install-homebrew'],
+    }
+  }
+
 }
