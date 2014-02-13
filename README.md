@@ -83,6 +83,18 @@ package {'macvim':
   install_options => [ '--override-system-vim' ],
 }
 ```
+
+## Hiera configuration
+If you use hiera, the puppet class homebrew will search for an entry called "packages".
+All packages inside that array will get installed by the homebrew class.
+
+E.g:
+```json
+{
+  "packages": [ "vim", "macvim", "tree". "multitail" ]
+}
+```
+
 ## License
 
 Copyright (c) 2014 Gildas CHERRUEL (Apache License, Version 2.0)

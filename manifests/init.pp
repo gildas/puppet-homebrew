@@ -152,7 +152,7 @@ class homebrew (
   }
 
   # Installs brews from hiera
-  $brews = hiera_array('brews')
+  $brews = hiera_array('packages')
   if (!empty($brews))
   {
     package {$brews:
