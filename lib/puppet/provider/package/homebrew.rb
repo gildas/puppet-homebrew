@@ -143,7 +143,7 @@ Puppet::Type.type(:package).provide(:brew, :parent => Puppet::Provider::Package)
   end
 
   def self.instances
-    Puppet.debug "Listing currently install brews"
+    Puppet.debug "Listing currently installed brews"
     package_list.collect { |hash| new(hash) }
   end
 end
