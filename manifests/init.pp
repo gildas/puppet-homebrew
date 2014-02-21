@@ -41,7 +41,7 @@
 #
 # === Authors
 #
-# Author Name <gildas.cherruel@inin.com>
+# Author Name <gildas@breizh.org>
 #
 # === Copyright
 #

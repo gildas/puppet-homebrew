@@ -40,7 +40,7 @@ Provided you already have a compiler installed!
 If you do not have a compiler installed, you will want to load one with the class:
 
 ```Puppet
-class { 'homebrew':
+class {'homebrew':
   xcode_cli_source  => 'https://my_repo/command_line_tools_os_x_mavericks_for_xcode__late_october_2013.dmg',
 }
 ```
@@ -51,7 +51,7 @@ By default, homebrew will be installed as root/wheel, which might not be the des
 To install on behalf of another user, use these parameters:
 
 ```Puppet
-class { 'homebrew':
+class {'homebrew':
   user  => gildas,
   group => brew,
 }
