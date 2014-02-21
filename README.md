@@ -86,6 +86,19 @@ package {'macvim':
 }
 ```
 
+## Tapping repositories
+
+To tap into new Github repositories, simply use the tap provider:
+
+```puppet
+package {'homebrew/binaries':
+  ensure   => present,
+  provider => tap,
+}
+```
+
+You can untap a repository by setting ensure to absent.
+
 ## Hiera configuration
 If you use hiera, the puppet class homebrew will search for an entry called "packages".
 All packages inside that array will get installed by the homebrew class.
