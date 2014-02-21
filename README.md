@@ -57,6 +57,8 @@ class {'homebrew':
 }
 ```
 
+to test if Homebrew was installed, just check the Fact has_homebrew (or has_brew)
+
 ## Installing brews
 
 To install brews, use the package provider as follows:
