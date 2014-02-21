@@ -46,6 +46,17 @@ Puppet::Type.type(:package).provide(:tap, :parent => Puppet::Provider::Package) 
     execute([command(:brew), :untap, @resource[:name]])
   end
 
+  def query
+    Puppet.debug "Querying tap #{@resource[:name]}"
+    if File.directory?("/usr/local/Library/Taps/#{@resource[:name].gsub(/\//, '-')}")
+      Puppet.debug "  #{@resource[:name]} is being tapped"
+      return { :name => @resource[:name], :ensure => 'present', :provider => 'chocolatey' }
+    else
+      Puppet.debug "  #{@resource[:name]} not installed"
+      nil
+    end
+  end
+
   def self.instances
     Puppet.debug "Listing currently tapped repositories"
     taps = []
