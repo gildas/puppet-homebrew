@@ -66,7 +66,7 @@ Puppet::Type.type(:package).provide(:tap, :parent => Puppet::Provider::Package) 
           line.chomp!
           next if line.empty?
           Puppet.debug "  Repository #{line} is currently tapped."
-          packages << new({ :name => line, :ensure => 'present', :provider => 'tap' })
+          taps << new({ :name => line, :ensure => 'present', :provider => 'tap' })
         end
       end
       taps
