@@ -152,15 +152,16 @@ class homebrew (
   }
 
   # Installs brews from hiera
-  $packages = hiera_array('packages', [])
+  $packages = hiera_packages('packages', {})
   if (!empty($packages))
   {
     notice(" Checking packages: ${packages}")
-    package {$packages:
-      ensure   => installed,
+    $package_defaults = {
+      ensure   => latest,
       provider => brew,
       require  => Exec['install-homebrew'],
     }
+    create_resources(package, $packages, $package_defaults)
   }
 
 }
