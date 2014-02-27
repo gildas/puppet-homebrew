@@ -66,9 +66,9 @@ Puppet::Type.type(:package).provide(:brew, :parent => Puppet::Provider::Package)
       raise Puppet::ExecutionFailure, "Could not find package #{@resource[:name]}"
     end
 
-    if linkapps?
-      output = execute([command(:brew), 'linkapps'])
-    end
+    #if linkapps?
+    #  output = execute([command(:brew), :linkapps])
+    #end
   end
 
   def uninstall
