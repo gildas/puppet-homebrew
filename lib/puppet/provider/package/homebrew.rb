@@ -97,10 +97,10 @@ Puppet::Type.type(:package).provide(:brew, :parent => Puppet::Provider::Package)
   end
 
   def latest
-    info = execute([command(:brew), :info, @resource[:name]])
+    info = execute([command(:brew), :list, '--versions', @resource[:name]])
     return nil if $CHILD_STATUS != 0 or info =~ /^Error/
     return 'HEAD' if info =~ /\bHEAD\b/
-    return info.lines[0].split[0]
+    return info.lines[0].split(' ')[1]
   end
 
   def self.package_list(options={})
