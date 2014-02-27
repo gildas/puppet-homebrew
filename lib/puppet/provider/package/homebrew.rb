@@ -81,7 +81,37 @@ Puppet::Type.type(:package).provide(:brew, :parent => Puppet::Provider::Package)
     end
   end
 
-  alias :update :install
+  def update
+    Puppet.notice "Updating #{@resource[:name]}"
+    should = @resource[:ensure]
+    package_name = @resource[:name]
+
+    Puppet.notice "Unlinking #{package_name}"
+    execute([command(:brew), :unlink, package_name, *install_options])
+
+    case should
+    when true, false, Symbol
+      # pass
+    else
+      package_name += "-#{should}"
+    end
+    Puppet.debug "  Package: #{package_name}"
+
+    if install_options.any?
+      output = execute([command(:brew), :install, package_name, *install_options])
+    else
+      output = execute([command(:brew), :install, package_name])
+    end
+
+    # Fail hard if there is no formula available.
+    if output =~ /Error: No available formula/
+      raise Puppet::ExecutionFailure, "Could not find package #{@resource[:name]}"
+    end
+
+    #if linkapps?
+    #  output = execute([command(:brew), :linkapps])
+    #end
+  end
 
   def query
     Puppet.debug "Querying #{@resource[:name]}"
