@@ -143,8 +143,9 @@ Puppet::Type.type(:package).provide(:brew, :parent => Puppet::Provider::Package)
           next if line !~ /^#{@resource[:name]}:\s(.*)/i
           Puppet.debug "  Latest versions for #{@resource[:name]}: #{$1}"
           versions = $1
-          return 'HEAD' if versions =~ /\bHEAD\b/
+          #return 'HEAD' if versions =~ /\bHEAD\b/
           return $1 if versions =~ /stable (\d+[^\s]*)\s+\(bottled\)/
+          return $1 if versions =~ /stable (\d+.*), HEAD/
           return $1 if versions =~ /stable (\d+.*)/
           return $1 if versions =~ /(\d+.*)/
         end
