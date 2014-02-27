@@ -42,6 +42,7 @@ Puppet::Type.type(:package).provide(:brew, :parent => Puppet::Provider::Package)
 
   # Install packages, known as formulas, using brew.
   def install
+    Puppet.notice "Installing #{@resource[:name]}"
     should = @resource[:ensure]
 
     Puppet.notice "Installing #{@resource[:name]}"
@@ -72,7 +73,12 @@ Puppet::Type.type(:package).provide(:brew, :parent => Puppet::Provider::Package)
 
   def uninstall
     Puppet.notice "Uninstalling #{@resource[:name]}"
-    execute([command(:brew), :uninstall, @resource[:name]])
+    begin
+      execute([command(:brew), :uninstall, @resource[:name]])
+    rescue Puppet::ExecutionFailure
+      Puppet.err "Package #{@resource[:name]} Uninstall failed: #{$!}"
+      nil
+    end
   end
 
   alias :update :install
@@ -92,6 +98,7 @@ Puppet::Type.type(:package).provide(:brew, :parent => Puppet::Provider::Package)
         :provider => :brew
       }
     rescue Puppet::ExecutionFailure
+      Puppet.err "Package #{@resource[:name]} Query failed: #{$!}"
       raise Puppet::Error, "Brew error: #{$!}"
     end
   end
@@ -120,7 +127,7 @@ Puppet::Type.type(:package).provide(:brew, :parent => Puppet::Provider::Package)
   end
 
   def self.package_list(options={})
-    Puppet.debug "Listing brews"
+    Puppet.debug "Listing currently installed brews"
     brew_list_command = [command(:brew), "list", "--versions"]
 
     if name = options[:justme]
