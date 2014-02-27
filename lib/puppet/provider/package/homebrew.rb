@@ -181,19 +181,15 @@ Puppet::Type.type(:package).provide(:brew, :parent => Puppet::Provider::Package)
   end
 
   def self.name_version_split(line)
-    if line =~ (/^(\S+)\s+(.+)/)
-      name = $1
-      version = $2
-      Puppet.debug "  Package #{name} is at version: #{version}."
-      {
-        :name     => name,
-        :ensure   => version,
-        :provider => :brew
-      }
-    else
-      Puppet.warning "Could not match #{line}"
-      nil
-    end
+    info    = line.split(' ')
+    name    = info[0]
+    version = info.last
+    Puppet.debug "  Package #{name} is at version: #{version}."
+    {
+      :name     => name,
+      :ensure   => version,
+      :provider => :brew
+    }
   end
 
   def self.instances
