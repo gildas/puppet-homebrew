@@ -152,7 +152,7 @@ class homebrew (
   }
 
   # Installs brews from hiera
-  $packages = hiera_packages('packages', {})
+  $packages = hiera_hash('packages', {})
   if (!empty($packages))
   {
     notice(" Checking packages: ${packages}")
