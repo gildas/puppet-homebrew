@@ -106,7 +106,7 @@ Puppet::Type.type(:package).provide(:brew, :parent => Puppet::Provider::Package)
   def latest
     Puppet.debug "Querying latest for #{@resource[:name]}"
     begin
-      execpipe([command(:brew), :infp, @resource[:name]]) do |process|
+      execpipe([command(:brew), :info, @resource[:name]]) do |process|
         process.each_line do |line|
           line.chomp!
           next if line.empty?
