@@ -97,10 +97,26 @@ Puppet::Type.type(:package).provide(:brew, :parent => Puppet::Provider::Package)
   end
 
   def latest
-    info = execute([command(:brew), :list, '--versions', @resource[:name]])
-    return nil if $CHILD_STATUS != 0 or info =~ /^Error/
-    return 'HEAD' if info =~ /\bHEAD\b/
-    return info.lines[0].split(' ')[1]
+    Puppet.debug "Querying latest for #{@resource[:name]}"
+    begin
+      execpipe([command(:brew), :infp, @resource[:name]]) do |process|
+        process.each_line do |line|
+          line.chomp!
+          next if line.empty?
+          next if line !~ /^#{@resource[:name]}:\s(.*)/i
+          Puppet.debug "  Latest versions for #{@resource[:name]}: #{$1}"
+          versions = $1
+          return 'HEAD' if versions =~ /\bHEAD\b/
+          return $1 if versions =~ /stable (\d+[^\s]*)\s+\(bottled\)/
+          return $1 if versions =~ /stable (\d+.*)/
+          return $1 if versions =~ /(\d+.*)/
+        end
+      end
+      nil
+    rescue Puppet::ExecutionFailure
+      Puppet.err "Package #{@resource[:name]} Query Latest failed: #{$!}"
+      nil
+    end
   end
 
   def self.package_list(options={})
