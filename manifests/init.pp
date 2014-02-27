@@ -51,6 +51,7 @@ class homebrew (
   $xcode_cli_source = 'http://puppet/command_line_tools_os_x_mavericks_for_xcode__late_october_2013.dmg',
   $user             = root,
   $group            = brew,
+  $update_every     = 'default',
 )
 {
   $xcode_cli_install = url_parse($xcode_cli_source, 'filename')
@@ -150,6 +151,52 @@ class homebrew (
     mode      => '0775',
     require   => Exec['install-homebrew'],
   }
+
+  case $update_every
+  {
+    'default', true, present:
+    { # By default we update brew every day at 02:07A (odd time on purpose)
+      $cron_ensure    = present
+      $cron_minute    = '7'
+      $cron_hour      = '2'
+      $cron_monthday  = absent
+      $cron_month     = absent
+      $cron_weekday   = absent
+    }
+    'never', false, absent:
+    {
+      $cron_ensure    = absent
+      $cron_minute    = absent
+      $cron_hour      = absent
+      $cron_monthday  = absent
+      $cron_month     = absent
+      $cron_weekday   = absent
+    }
+    default:
+    {
+      $frequencies    = split($update_every, ':')
+      $cron_ensure    = present
+      $cron_minute    = $frequencies[0]
+      $cron_hour      = size($frequencies) ? { /(1|2|3|4)/ => $frequencies[1], default => absent }
+      $cron_monthday  = size($frequencies) ? { /(2|3|4)/   => $frequencies[2], default => absent }
+      $cron_month     = size($frequencies) ? { /(3|4)/     => $frequencies[3], default => absent }
+      $cron_weekday   = size($frequencies) ? { /4/         => $frequencies[4], default => absent }
+    }
+  }
+
+  cron {'cron-update-brew':
+    command     => '/usr/local/bin/brew update 2>&1 >> /Libraru/Logs/Homebrew/cron-update-brew.log',
+    environment => ['HOMEBREW_CACHE=/Library/Caches/Homebrew', 'HOMEBREW_LOGS=/Library/Logs/Homebrew/'],
+    ensure      => $cron_ensure,
+    user        => root,
+    minute      => $cron_minute,
+    hour        => $cron_hour,
+    monthday    => $cron_monthday,
+    month       => $cron_month,
+    weekday     => $cron_weekday,
+    require     => Exec['install-homebrew'],
+  }
+
 
   # Installs brews from hiera
   $packages = hiera_hash('packages', {})
