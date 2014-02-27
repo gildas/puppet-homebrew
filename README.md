@@ -101,12 +101,18 @@ You can untap a repository by setting ensure to absent.
 
 ## Hiera configuration
 If you use hiera, the puppet class homebrew will search for an entry called "packages".
-All packages inside that array will get installed by the homebrew class.
+All packages inside that hash will get installed by the homebrew class.
+Note that packages are merged via the hash method in Hiera. This allows to install common packages on nodes of the same OS, then specific packages on some nodes.
 
 E.g:
 ```json
 {
-  "packages": [ "vim", "macvim", "tree". "multitail" ]
+  "packages": {
+    "vim": {},
+    "macvim": {},
+    "tree": {},
+    "multitail": {}
+  }
 }
 ```
 
