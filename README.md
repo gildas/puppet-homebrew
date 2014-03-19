@@ -37,11 +37,12 @@ include homebrew
 
 Provided you already have a compiler installed!
 
-If you do not have a compiler installed, you will want to load one with the class:
+If you do not have a compiler installed or if the compiler is out-of-date, you will want to load one with the class:
 
 ```Puppet
 class {'homebrew':
-  xcode_cli_source  => 'https://my_repo/command_line_tools_os_x_mavericks_for_xcode__late_october_2013.dmg',
+  xcode_cli_source  => 'https://my_repo/commandline_tools_os_x_mavericks_for_xcode__march_2014.dmg',
+  xcode_cli_version => '5.1',
 }
 ```
 
