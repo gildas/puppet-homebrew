@@ -48,10 +48,11 @@
 # Copyright 2014, Gildas CHERRUEL.
 #
 class homebrew (
-  $xcode_cli_source = 'http://puppet/command_line_tools_os_x_mavericks_for_xcode__late_october_2013.dmg',
-  $user             = root,
-  $group            = brew,
-  $update_every     = 'default',
+  $xcode_cli_source,
+  $xcode_cli_version,
+  $user              = root,
+  $group             = brew,
+  $update_every      = 'default',
 )
 {
   $xcode_cli_install = url_parse($xcode_cli_source, 'filename')
@@ -67,7 +68,7 @@ class homebrew (
     fail("Unsupported OS version: ${::macosx_productversion_major}")
   }
 
-  if (! $has_compiler)
+  if (! $has_compiler or $xcodeversion != $xcode_cli_version)
   {
     package {$xcode_cli_install:
       ensure   => present,
