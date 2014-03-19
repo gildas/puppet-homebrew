@@ -86,8 +86,10 @@ Puppet::Type.type(:package).provide(:brew, :parent => Puppet::Provider::Package)
     should = @resource[:ensure]
     package_name = @resource[:name]
 
-    Puppet.notice "Unlinking #{package_name}"
-    execute([command(:brew), :unlink, package_name, *install_options])
+    if installed?
+      Puppet.notice "Unlinking #{package_name}"
+      execute([command(:brew), :unlink, package_name, *install_options])
+    end
 
     case should
     when true, false, Symbol
@@ -111,6 +113,11 @@ Puppet::Type.type(:package).provide(:brew, :parent => Puppet::Provider::Package)
     #if linkapps?
     #  output = execute([command(:brew), :linkapps])
     #end
+  end
+
+  def installed?
+    is_not_installed = execute([command(:brew), :info, @resource[:name]]).split("\n").grep(/^Not installed$/).first
+    is_not_installed.nil?
   end
 
   def query
