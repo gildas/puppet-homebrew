@@ -186,7 +186,7 @@ class homebrew (
   }
 
   cron {'cron-update-brew':
-    command     => '/usr/local/bin/brew update 2>&1 >> /Libraru/Logs/Homebrew/cron-update-brew.log',
+    command     => '/usr/local/bin/brew update 2>&1 >> /Library/Logs/Homebrew/cron-update-brew.log',
     environment => ['HOMEBREW_CACHE=/Library/Caches/Homebrew', 'HOMEBREW_LOGS=/Library/Logs/Homebrew/'],
     ensure      => $cron_ensure,
     user        => root,
