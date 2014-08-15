@@ -48,15 +48,14 @@
 # Copyright 2014, Gildas CHERRUEL.
 #
 class homebrew (
-  $xcode_cli_source,
-  $xcode_cli_version,
+  $xcode_cli_source  = undef,
+  $xcode_cli_version = undef,
   $user              = root,
   $group             = brew,
   $update_every      = 'default',
   $install_packages  = true
 )
 {
-  $xcode_cli_install = url_parse($xcode_cli_source, 'filename')
 
   if ($::operatingsystem != 'Darwin')
   {
@@ -69,12 +68,16 @@ class homebrew (
     fail("Unsupported OS version: ${::macosx_productversion_major}")
   }
 
-  if (! $has_compiler or $xcodeversion != $xcode_cli_version)
-  {
-    package {$xcode_cli_install:
-      ensure   => present,
-      provider => pkgdmg,
-      source   => $xcode_cli_source,
+  if ($xcode_cli_source) {
+    $xcode_cli_install = url_parse($xcode_cli_source, 'filename')
+
+    if ($has_compiler != 'true' or ($xcode_cli_version and $xcodeversion != $xcode_cli_version))
+    {
+      package {$xcode_cli_install:
+        ensure   => present,
+        provider => pkgdmg,
+        source   => $xcode_cli_source,
+      }
     }
   }
 
@@ -142,7 +145,7 @@ class homebrew (
     timeout   => 0,
     require   => File[$homebrew_directories],
   }
-  if (! $has_compiler)
+  if ($has_compiler != 'true' and $xcode_cli_source)
   {
     Package[$xcode_cli_install] -> Exec['install-homebrew']
   }
