@@ -4,7 +4,7 @@
 #
 # Do not forget to download the command line tools for XCode from Apple and store them on a local repository.
 # Caveat: You need an Apple ID to do that!
-# 
+#
 # For Mavericks:
 #  http://adcdownload.apple.com/Developer_Tools/command_line_tools_os_x_mavericks_for_xcode__late_october_2013/command_line_tools_os_x_mavericks_for_xcode__late_october_2013.dmg
 # For Mountain Lion:
@@ -53,6 +53,7 @@ class homebrew (
   $user              = root,
   $group             = brew,
   $update_every      = 'default',
+  $install_packages  = true
 )
 {
   $xcode_cli_install = url_parse($xcode_cli_source, 'filename')
@@ -198,18 +199,8 @@ class homebrew (
     require     => Exec['install-homebrew'],
   }
 
-
-  # Installs brews from hiera
-  $packages = hiera_hash('packages', {})
-  if (!empty($packages))
-  {
-    notice(" Checking packages: ${packages}")
-    $package_defaults = {
-      ensure   => latest,
-      provider => brew,
-      require  => Exec['install-homebrew'],
-    }
-    create_resources(package, $packages, $package_defaults)
+  if $install_packages {
+    include homebrew::packages
   }
 
 }
