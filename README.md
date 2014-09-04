@@ -117,6 +117,9 @@ E.g:
 }
 ```
 
+## Contributors
+[John Eckhart](https://github.com/jeckhart)
+
 ## License
 
 Copyright (c) 2014 Gildas CHERRUEL (Apache License, Version 2.0)
