@@ -45,6 +45,7 @@ class {'homebrew':
   xcode_cli_version => '5.1',
 }
 ```
+Note: these 2 arguments are now optional. In that case, the installation will assume Xcode is installed properly.
 
   * Caveat: To download the Xcode command line tools, you must have an Apple ID.
 
