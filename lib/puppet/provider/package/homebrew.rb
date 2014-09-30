@@ -18,13 +18,14 @@ Puppet::Type.type(:package).provide(:brew, :parent => Puppet::Provider::Package)
 
   def self.execute(cmd)
     owner = super([command(:stat), '-nf', '%Uu', command(:brew)]).to_i
-    Puppet.debug "command owner is: #{owner}"
+    environment = BREW_CUSTOM_ENVIRONMENT.merge('HOME' => Etc.getpwuid(owner).dir)
+    Puppet.debug "command owner is: #{owner}, home: #{environment['HOME']}"
     if super([command(:id), '-u']).to_i.zero?
       Puppet.debug "running command in sudo environment as current user is root"
-      super(cmd, :uid => owner, :failonfail => true, :combine => true, :custom_environment => BREW_CUSTOM_ENVIRONMENT)
+      super(cmd, :uid => owner, :failonfail => true, :combine => true, :custom_environment => environment)
     else
       Puppet.debug "running command with current (non-root) user"
-      super(cmd, :failonfail => true, :combine => true, :custom_environment => BREW_CUSTOM_ENVIRONMENT)
+      super(cmd, :failonfail => true, :combine => true, :custom_environment => environment)
     end
   end
 
