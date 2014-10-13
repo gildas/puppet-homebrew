@@ -49,13 +49,16 @@ Puppet::Type.type(:package).provide(:tap, :parent => Puppet::Provider::Package) 
 
   def query
     Puppet.debug "Querying tap #{@resource[:name]}"
-    if File.directory?("/usr/local/Library/Taps/#{@resource[:name].gsub(/\//, '-')}")
-      Puppet.debug "  #{@resource[:name]} is being tapped"
-      return { :name => @resource[:name], :ensure => 'present', :provider => 'chocolatey' }
-    else
-      Puppet.debug "  #{@resource[:name]} not installed"
-      nil
+    begin
+      output = execute([command(:brew), :tap])
+      output.each_line do |line|
+        line.chomp!
+        return { :name => line, :ensure => 'present', :provider => 'tap' } if line == @resource[:name]
+      end
+    rescue Puppet::ExecutionFailure
+      Puppet.err "Instances failed: #{$!}"
     end
+    nil
   end
 
   def self.instances
