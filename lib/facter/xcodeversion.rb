@@ -8,7 +8,7 @@ Facter.add(:xcodeversion) do
       end
     end
   end
-  
+
   # At least in Maverics, if you even run xcorebuild it will try to install the tools
   confine :macosx_productversion_major => "10.9"
   setcode do
