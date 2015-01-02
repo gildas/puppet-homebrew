@@ -2,13 +2,9 @@
 #
 # Install HomeBrew  for Mac OS/X (http://brew.sh/) as a Puppet package provider
 #
-# Do not forget to download the command line tools for XCode from Apple and store them on a local repository.
+# Do not forget to download the command line tools for XCode from Apple
+# and store them on a local repository.
 # Caveat: You need an Apple ID to do that!
-#
-# For Mavericks:
-#  http://adcdownload.apple.com/Developer_Tools/command_line_tools_os_x_mavericks_for_xcode__late_october_2013/command_line_tools_os_x_mavericks_for_xcode__late_october_2013.dmg
-# For Mountain Lion:
-#  http://adcdownload.apple.com/Developer_Tools/command_line_tools_os_x_mountain_lion_for_xcode__april_2013/xcode462_cltools_10_86938259a.dmg
 #
 # === Parameters
 #
@@ -71,7 +67,7 @@ class homebrew (
   if ($xcode_cli_source) {
     $xcode_cli_install = url_parse($xcode_cli_source, 'filename')
 
-    if ($::has_compiler != 'true' or ($xcode_cli_version and $::xcodeversion != $xcode_cli_version)) # lint:ignore:quoted_booleans
+    if ($::has_compiler != true or ($xcode_cli_version and $::xcodeversion != $xcode_cli_version))
     {
       package {$xcode_cli_install:
         ensure   => present,
@@ -153,7 +149,7 @@ class homebrew (
     timeout   => 0,
     notify    => File[$homebrew_directories]
   }
-  if ($::has_compiler != 'true' and $xcode_cli_source) # lint:ignore:quoted_booleans
+  if ($::has_compiler != true and $xcode_cli_source)
   {
     Package[$xcode_cli_install] -> Exec['install-homebrew']
   }
