@@ -3,11 +3,17 @@
   "version": "0.4.16",
   "author": "gildas",
   "summary": "Homebrew package installer and provider",
-  "license": "Apache License, Version 2.0",
+  "license": "Apache-2.0",
   "source": "https://github.com/gildas/puppet-homebrew",
   "project_page": "https://github.com/gildas/puppet-homebrew",
   "issues_url": "https://github.com/gildas/puppet-homebrew/issues",
   "description": "Homebrew for Mac OS/X package installer and provider for PuppetLabs",
+  "operatingsystem_support": [
+    {
+      "operatingsystem":        "Darwin",
+      "operatingsystemrelease": [ "13.0.0", "14.0.0" ]
+    }
+  ],
   "dependencies": [
   
   ]
