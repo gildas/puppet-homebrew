@@ -20,7 +20,9 @@ Puppet::Type.type(:package).provide(:tap, :parent => Puppet::Provider::Package) 
     Puppet.debug "command owner is: #{owner}, home: #{environment['HOME']}"
     if super([command(:id), '-u']).to_i.zero?
       Puppet.debug "running command in sudo environment as current user is root"
-      super(cmd, :uid => owner, :failonfail => true, :combine => true, :custom_environment => environment)
+      Dir.chdir(environment['HOME']) do
+        super(cmd, :uid => owner, :failonfail => true, :combine => true, :custom_environment => environment)
+      end
     else
       Puppet.debug "running command with current (non-root) user"
       super(cmd, :failonfail => true, :combine => true, :custom_environment => environment)
