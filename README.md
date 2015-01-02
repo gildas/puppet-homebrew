@@ -110,6 +110,7 @@ E.g:
 ```json
 {
   "packages": {
+    "homebrew/binaries": { "provider": "tap" },
     "vim": {},
     "macvim": {},
     "tree": {},
