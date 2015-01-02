@@ -71,7 +71,7 @@ class homebrew (
   if ($xcode_cli_source) {
     $xcode_cli_install = url_parse($xcode_cli_source, 'filename')
 
-    if ($has_compiler != 'true' or ($xcode_cli_version and $xcodeversion != $xcode_cli_version))
+    if ($::has_compiler != 'true' or ($xcode_cli_version and $::xcodeversion != $xcode_cli_version)) # lint:ignore:quoted_booleans
     {
       package {$xcode_cli_install:
         ensure   => present,
@@ -82,32 +82,32 @@ class homebrew (
   }
 
   $homebrew_directories = [
-                   '/usr/local/bin',
-                   '/usr/local/etc',
-                   '/usr/local/include',
-                   '/usr/local/lib',
-                   '/usr/local/lib/pkgconfig',
-                   '/usr/local/Library',
-                   '/usr/local/sbin',
-                   '/usr/local/share',
-                   '/usr/local/var',
-                   '/usr/local/var/log',
-                   '/usr/local/share/locale',
-                   '/usr/local/share/man',
-                   '/usr/local/share/man/man1',
-                   '/usr/local/share/man/man2',
-                   '/usr/local/share/man/man3',
-                   '/usr/local/share/man/man4',
-                   '/usr/local/share/man/man5',
-                   '/usr/local/share/man/man6',
-                   '/usr/local/share/man/man7',
-                   '/usr/local/share/man/man8',
-                   '/usr/local/share/info',
-                   '/usr/local/share/doc',
-                   '/usr/local/share/aclocal',
-                   '/Library/Caches/Homebrew',
-                   '/Library/Logs/Homebrew',
-                 ]
+    '/usr/local/bin',
+    '/usr/local/etc',
+    '/usr/local/include',
+    '/usr/local/lib',
+    '/usr/local/lib/pkgconfig',
+    '/usr/local/Library',
+    '/usr/local/sbin',
+    '/usr/local/share',
+    '/usr/local/var',
+    '/usr/local/var/log',
+    '/usr/local/share/locale',
+    '/usr/local/share/man',
+    '/usr/local/share/man/man1',
+    '/usr/local/share/man/man2',
+    '/usr/local/share/man/man3',
+    '/usr/local/share/man/man4',
+    '/usr/local/share/man/man5',
+    '/usr/local/share/man/man6',
+    '/usr/local/share/man/man7',
+    '/usr/local/share/man/man8',
+    '/usr/local/share/info',
+    '/usr/local/share/doc',
+    '/usr/local/share/aclocal',
+    '/Library/Caches/Homebrew',
+    '/Library/Logs/Homebrew',
+  ]
 
   group {$group:
     ensure => present,
@@ -153,16 +153,16 @@ class homebrew (
     timeout   => 0,
     notify    => File[$homebrew_directories]
   }
-  if ($has_compiler != 'true' and $xcode_cli_source)
+  if ($::has_compiler != 'true' and $xcode_cli_source) # lint:ignore:quoted_booleans
   {
     Package[$xcode_cli_install] -> Exec['install-homebrew']
   }
 
   file { '/usr/local/bin/brew':
-    owner     => $homebrew::user,
-    group     => $homebrew::group,
-    mode      => '0775',
-    require   => Exec['install-homebrew'],
+    owner   => $homebrew::user,
+    group   => $homebrew::group,
+    mode    => '0775',
+    require => Exec['install-homebrew'],
   }
 
   case $update_every
@@ -198,9 +198,9 @@ class homebrew (
   }
 
   cron {'cron-update-brew':
+    ensure      => $cron_ensure,
     command     => '/usr/local/bin/brew update 2>&1 >> /Library/Logs/Homebrew/cron-update-brew.log',
     environment => ['HOMEBREW_CACHE=/Library/Caches/Homebrew', 'HOMEBREW_LOGS=/Library/Logs/Homebrew/'],
-    ensure      => $cron_ensure,
     user        => root,
     minute      => $cron_minute,
     hour        => $cron_hour,
