@@ -126,7 +126,10 @@ E.g:
 
 [Jasper Lievisse Adriaanse](https://github.com/jasperla)
 
+[Dominic Scheirlinck](https://github.com/dominics)
+
 [Martin Skinner](https://github.com/mask)
+
 
 ## License
 
