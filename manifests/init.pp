@@ -11,8 +11,12 @@
 # Document parameters here.
 #
 # [*xcode_cli_source*]
-#   Contains the URL where this module can find the XCode CLI package
-#   Default: 'http://puppet/command_line_tools_os_x_mavericks_for_xcode__late_october_2013.dmg'
+#   Contains the URL where this module can find the XCode CLI package.
+#   Default: undef
+#
+# [*xcode_cli_version*]
+#   Contains the version of the desired Xcode CLI package.
+#   Default: undef
 #
 # [*user*]
 #   Tells which user will own the Homebrew installation.
@@ -21,8 +25,28 @@
 #
 # [*group*]
 #   Tells which group will own the Homebrew installation.
-#   You should add users to this group later on if you want them to be allowed to install brews.
+#   You should add users to this group later on
+#   if you want them to be allowed to install brews.
 #   Defaults: brew
+#
+# [*update_every*]
+#   Tells how often a brew update should be run.
+#   if 'default', it will be run every day at 02:07, local time.
+#   if 'never', it will never run...
+#   otherwise, MM:HH:dd:mm:wd is expected. Where:
+#     - MM is the minute
+#     - HH is the hour
+#     - dd is the day of the month
+#     - mm is the month
+#     - wd is the week day
+#   See https://docs.puppetlabs.com/references/latest/type.html#cron and
+#   man crontab for a full explanation of time representations.
+#   Note we do not support multi-values at the moment ([2, 4], e.g.).
+#   Default: 'default'
+#
+# [*install_package*]
+#   Tells if packages should be installed by searching the hiera database.
+#   Default: true
 #
 # === Examples
 #
@@ -33,6 +57,12 @@
 #  class { 'homebrew':
 #    user  => gildas,
 #    group => brew,
+#  }
+#
+#  class { 'homebrew':
+#    user         => gildas,
+#    group        => brew,
+#    update_every => '01:*/6'
 #  }
 #
 # === Authors
