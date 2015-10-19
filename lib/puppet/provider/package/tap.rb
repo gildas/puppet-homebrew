@@ -67,13 +67,12 @@ Puppet::Type.type(:package).provide(:tap, :parent => Puppet::Provider::Package) 
     Puppet.debug "Listing currently tapped repositories"
     taps = []
     begin
-      execpipe([command(:brew), :tap]) do |process|
-        process.each_line do |line|
-          line.chomp!
-          next if line.empty?
-          Puppet.debug "  Repository #{line} is currently tapped."
-          taps << new({ :name => line, :ensure => 'present', :provider => 'tap' })
-        end
+      process = execute([command(:brew), :tap])
+      process.each_line do |line|
+        line.chomp!
+        next if line.empty?
+        Puppet.debug "  Repository #{line} is currently tapped."
+        taps << new({ :name => line, :ensure => 'present', :provider => 'tap' })
       end
       taps
     rescue Puppet::ExecutionFailure
