@@ -135,9 +135,11 @@ class homebrew (
     '/Library/Logs/Homebrew',
   ]
 
-  group {$group:
-    ensure => present,
-    name   => $group,
+  # Ensure the group, user, and home directory exist
+  ensure_resource('group', $group, {'ensure' => 'present'})
+  if $user != 'root' {
+    ensure_resource('user', $user, {'ensure' => 'present', 'shell' => '/bin/bash'})
+    ensure_resource('file', "/Users/${user}", {'ensure' => 'directory', 'owner' => $user, 'group' => $group, 'mode' => '0755', 'require' => [User[$user], Group[$group]]})
   }
 
   file {$homebrew_directories:
@@ -146,7 +148,7 @@ class homebrew (
     group   => $homebrew::group,
     mode    => '0775',
     require => Group[$group],
-  }
+  } ->
 
   file {'/usr/local':
     ensure  => directory,
@@ -154,6 +156,15 @@ class homebrew (
     group   => $homebrew::group,
     mode    => '0775',
     require => Group[$group],
+  } ->
+
+  exec {'install-homebrew':
+    cwd       => '/usr/local',
+    command   => "/usr/bin/su ${homebrew::user} -c '/bin/bash -o pipefail -c \"/usr/bin/curl -skSfL https://github.com/mxcl/homebrew/tarball/master | /usr/bin/tar xz -m --strip 1\"'",
+    creates   => '/usr/local/bin/brew',
+    logoutput => on_failure,
+    timeout   => 0,
+    require   => File['/etc/profile.d/homebrew.sh'],
   }
 
   if (! defined(File['/etc/profile.d']))
@@ -171,14 +182,6 @@ class homebrew (
     require => File['/etc/profile.d'],
   }
 
-  exec {'install-homebrew':
-    cwd       => '/usr/local',
-    command   => "/usr/bin/su ${homebrew::user} -c '/bin/bash -o pipefail -c \"/usr/bin/curl -skSfL https://github.com/mxcl/homebrew/tarball/master | /usr/bin/tar xz -m --strip 1\"'",
-    creates   => '/usr/local/bin/brew',
-    logoutput => on_failure,
-    timeout   => 0,
-    notify    => File[$homebrew_directories]
-  }
   if ($::has_compiler != true and $xcode_cli_source)
   {
     Package[$xcode_cli_install] -> Exec['install-homebrew']
