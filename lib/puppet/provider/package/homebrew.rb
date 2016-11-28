@@ -1,7 +1,7 @@
 require 'puppet/provider/package'
 
 Puppet::Type.type(:package).provide(:brew, :parent => Puppet::Provider::Package) do
-  BREW_CUSTOM_ENVIRONMENT = { "HOMEBREW_CACHE" => "/Library/Caches/Homebrew", "HOMEBREW_LOGS" => "/Library/Logs/Homebrew/", "HOMEBREW_NO_EMOJI" => "Yes" }
+  BREW_CUSTOM_ENVIRONMENT = { "HOMEBREW_CACHE" => "/Library/Caches/Homebrew", "HOMEBREW_LOGS" => "/Library/Logs/Homebrew/", "HOMEBREW_NO_EMOJI" => "Yes", "HOME" => ENV['HOME'] }
   desc "Package management using HomeBrew on OS X"
 
   confine  :operatingsystem => :darwin
@@ -14,7 +14,14 @@ Puppet::Type.type(:package).provide(:brew, :parent => Puppet::Provider::Package)
   commands :id   => "/usr/bin/id"
   commands :stat => "/usr/bin/stat"
   commands :sudo => "/usr/bin/sudo"
-  commands :brew => "/usr/local/bin/brew"
+
+  if Puppet::Util::Package.versioncmp(Puppet.version, '3.0') >= 0
+    has_command(:brew, "/usr/local/bin/brew") do
+      environment({ 'HOME' => ENV['HOME'] })
+    end
+  else
+    commands :brew => "/usr/local/bin/brew"
+  end
 
   def self.execute(cmd)
     owner = super([command(:stat), '-nf', '%Uu', command(:brew)]).to_i
