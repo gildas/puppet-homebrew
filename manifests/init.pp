@@ -97,7 +97,7 @@ class homebrew (
   if ($xcode_cli_source) {
     $xcode_cli_install = url_parse($xcode_cli_source, 'filename')
 
-    if ($::has_compiler != true or ($xcode_cli_version and $::xcodeversion != $xcode_cli_version))
+    if (! str2bool("$::has_compiler") or ($xcode_cli_version and $::xcodeversion != $xcode_cli_version))
     {
       package {$xcode_cli_install:
         ensure   => present,
@@ -182,7 +182,7 @@ class homebrew (
     require => File['/etc/profile.d'],
   }
 
-  if ($::has_compiler != true and $xcode_cli_source)
+  if (! str2bool("$::has_compiler") and $xcode_cli_source)
   {
     Package[$xcode_cli_install] -> Exec['install-homebrew']
   }
